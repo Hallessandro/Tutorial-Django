@@ -1,4 +1,4 @@
-Começando com o Django
+# Começando com o Django
 
 OBS.: $ Está sendo usado para simbolizar o uso de códigos, não add ele no terminal
 
@@ -24,24 +24,31 @@ OBS.: $ Está sendo usado para simbolizar o uso de códigos, não add ele no ter
 
 --> Se tudo funcionar, no terminal vai aparecer (myenv) no inicio da linha
 
-3 - Criando um projeto
+### 3 - Criando um projeto
 --> Com o ambiente virtual ativado
-```
-   $ django-admin startproject mysite (Sendo mysite o nome do projeto que se deseja criar)
 
+``` shell
+   $ django-admin startproject mysite #(Sendo mysite o nome do projeto que se deseja criar)
+```
 --> Se tudo funcionar, no diretório criado mysite, vai existir um arquivo manage.py e uma pasta mysite
 
-4 - Criando um banco de dados (Com o Sqlite3)
-	$ python manage.py migrate
---> Feito isso, podemos rodar o projeto para ver se está tudo funcionando
+### 4 - Criando um banco de dados (Com o Sqlite3)
 
-	$ python manage.py runserver (Comando deve ser executado na pasta que tem o arquivo manage.py)
+``` shell
+   $ python manage.py migrate
+```
+--> Feito isso, podemos rodar o projeto para ver se está tudo funcionando
+``` shell
+   $ python manage.py runserver #(Comando deve ser executado na pasta que tem o arquivo manage.py)
+``` 
 --> Para saber se funcionou, no navegador digite "http://127.0.0.1:8000/
 
-5 - Modelos
+### 5 - Modelos
 --> Antes de criar modelos, devemos criar um aplicativo para nosso projeto:
 
-$ python manage.py startapp blog (Sendo blog o nome do app)
+``` shell
+$ python manage.py startapp blog #(Sendo blog o nome do app)
+```
 --> Depois de criar um aplicativo, devemos dizer ao Django para usá-lo. Fazemos isso no arquivo mysite/settings.py, na linha onde tem 
 	INSTALLED_APPS, e adicionar uma linha conforme descrito abaixo:
 		INSTALLED_APPS = (
