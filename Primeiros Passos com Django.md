@@ -1,6 +1,6 @@
 # Começando com o Django
 
-OBS.: $ Está sendo usado para simbolizar o uso de códigos, não add ele no terminal
+* OBS.: $ Está sendo usado para simbolizar o uso de códigos, não add ele no terminal
 
 ### 1 - Criando um ambiente virtual
    --> Criamos uma pasta para armazenar os projetos
@@ -152,10 +152,10 @@ execute o comando abaixo, para criar um usuário.
 ``` shell
  $ git remote add origin Link_repositorio_Github
  $ git push -u origin master
-``
+```
 --> Será solicitado usuário e senha do Github. 
 
-8 - URLs
+### 8 - URLs
 Obs.: Linhas que possuem comentários, foram removidas para melhorar a visualização. 
 --> Dentro do arquivo mysite/urls.py, temos o seguinte conteúdo:
 
@@ -170,17 +170,26 @@ Obs.: Linhas que possuem comentários, foram removidas para melhorar a visualiza
 ```
 --> Podemos notar que a URL do admin, visitada anteriormente, já está aqui, e é assim que quando digitamos no navegador, o Django sabe como acessar aquela página que nos foi apresentada. 
 --> Um problema que vamos encontrar se decidirmos adicionar todas as URLs do nosso projeto nesse arquivo, é que ele ficará grande demais, e consequentemente muito desorganizado, e por isso é uma boa prática, criar um arquivo chamado urls.py dentro de nosso app, onde nesse arquivo nós apenas apontaremos o caminho para o nosso arquivo presente no APP. Fazemos isso adicionando a linha, que se segue, logo abaixo da linha da url admin.
- 	url(r'', include('blog.urls')), (Com a vírgula no final)
+
+``` python
+ url(r'', include('blog.urls')), #(Com a vírgula no final)
+```
 --> O Django agora irá redirecionar tudo o que entra em 'http://127.0.0.1:8000 /'para blog.urls e procurar por novas instruções lá.
 
 --> Em nosso arquivo blog/urls.py, que está vazio no momento, devemos adicionar em um primeiro momento, as linhas que se seguem:
-	from django.conf.urls import include, url
-	from . import views
+
+``` python
+ from django.conf.urls import include, url
+ from . import views
+```
 --> Aqui nós estamos apenas importando métodos do Django e todos os nossos views do aplicativo blog (ainda não temos nenhuma, mas teremos em um minuto!)
 --> Depois disso nós podemos adicionar nosso primeira URL padrão:
-	urlpatterns = [
-	    url(r'^$', views.post_list),
-	]
+
+``` python
+urlpatterns = [
+    url(r'^$', views.post_list),
+]
+```
 --> Como pode se notar, estamos atribuindo uma view chamada post_list para nossa URL, porém essa view ainda não existe, então se for feito o acesso a http://127.0.0.1:8000, vamos ver uma tela de erro, mas isso será resolvido após a criação da view. 
 
 ### 9 - Views
@@ -201,23 +210,33 @@ Obs.: Linhas que possuem comentários, foram removidas para melhorar a visualiza
 --> Se executarmos agora no navegador, veremos uma tela em branco, isso significa que tudo funcionou, agora só precisamos preencher nosso template, de forma que ele exiba todos as nossas postagens cadastradas. 
 
 --> Para que o template possa exibir algo, a consulta que é feita na view, deve ser armazena em algum objeto e esse objeto deve ser passado numa sessão como paramêtro de "render", anteriormente nos fizemos a função post_list na nossa view, contendo o seguinte código:
-	return render(request, 'blog/post_list.html', {})
+```python
+ return render(request, 'blog/post_list.html', {})
+```
 
 --> Antes de tudo, vamos ter que conectar nossa view com nossos modelos e para isso, vamos importar nossos modelos no arquivo views.py:
-	from django.shortcuts import render
-	from .models import Post
+``` python
+ from django.shortcuts import render
+ from .models import Post
+```
 --> O ponto depois de from significa o diretório atual ou o aplicativo atual. Como views.py e models.py estão no mesmo diretório podemos simplesmente usar . e o nome do arquivo (sem .py). Então nós importamos o nome do modelo (Post).
---> E o que vem agora? Para pegar os posts reais do model Post nós precisamos de uma coisa chamada QuerySet, que nada mais é do que uma lista de objetos de um dado modelo, como exemplo, podemos ter um QuerySet dos posts publicados ordenados pela data de publicação: 
-	Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+--> E o que vem agora? Para pegar os posts reais do model Post nós precisamos de uma coisa chamada QuerySet, que nada mais é do que uma lista de objetos de um dado modelo, como exemplo, podemos ter um QuerySet dos posts publicados ordenados pela data de publicação:
+
+``` python
+ Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+```
 
 --> Agora se colocarmos o pedaço de código acima dentro da função post_list, ficaremos com o seguinte código. 
-	from django.shortcuts import render
-	from django.utils import timezone
-	from .models import Post
+ 
+``` python
+ from django.shortcuts import render
+ from django.utils import timezone
+ from .models import Post
 
-	def post_list(request):
-	    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
-	    return render(request, 'blog/post_list.html', {})
+ def post_list(request):
+     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+     return render(request, 'blog/post_list.html', {})
+```
 
 --> A última parte que falta é passar o QuerySet posts, e podemos fazer isso passando ele para o último parâmetro de render "{}", devendo ficar assim: 
 	['posts': posts] 
@@ -226,17 +245,23 @@ Obs.: Linhas que possuem comentários, foram removidas para melhorar a visualiza
 11 - Usando tags de templates para exibir dados nos templates
 --> No capitulo anterior, nós fornecemos ao nosso template uma lista de postagens e a variável posts. Agora vamos exibir em nosso HTML.
 --> Para exibir uma variável no Django template, nós usamos colchetes duplos com o nome da variável dentro, exemplo:
-	{{ posts }}
-
+``` python
+ {{ posts }}
+```
 -- Dentro do nosso template adiciona a linha acima, o resultado deve se parecer com: 
 	[<Post: My second post>, <Post: My first post>]
 --> Isto significa que o Django a entende como uma lista de objetos. E em Python podemos exibir listas utilizando loops! Em um template Django, fazemos isso da seguinte maneira:
-	{% for post in posts %}
-	    {{ post }}
-	{% endfor %}
+
+``` python
+ {% for post in posts %}
+     {{ post }}
+ {% endfor %}
+```
+
 --> O resultado deve ser algo parecido com:
 	My second post My first post
 --> Funcionou! Mas ainda não exibe de uma boa forma, para isso podemos adicionar algumas tags HTML:
+``` html
 	<div>
 	    <h1><a href="/">Django Girls Blog</a></h1>
 	</div>
@@ -248,5 +273,7 @@ Obs.: Linhas que possuem comentários, foram removidas para melhorar a visualiza
 		<p>{{ post.text|linebreaksbr }}</p>
 	    </div>
 	{% endfor %}	
---> Tudo que você põe enrte {% for %} e {% endfor %} será repetido para cada objeto na lista. Atualize sua página:
+
+```
+--> Tudo que você põe enrte ```{% for %}``` e ```{% endfor %}``` será repetido para cada objeto na lista. Atualize sua página:
 
